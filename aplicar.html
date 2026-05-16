@@ -468,13 +468,13 @@
     // Guía rápida al final de este archivo en los comentarios.
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaW-c6y9D4XjsfpdETfTZdkTnV5lB56Vuua_j-QxBo1KNOzCCIHUs0--vu8dLNf-7sAQ/exec';
 
-    document.getElementById('apply-form').addEventListener('submit', async function(e) {
+    document.getElementById('apply-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const btn = this.querySelector('button[type=submit]');
       btn.textContent = 'Enviando…';
       btn.disabled = true;
 
-      const data = {
+      const params = new URLSearchParams({
         nombre:      document.getElementById('f-nombre').value,
         telefono:    document.getElementById('f-tel').value,
         email:       document.getElementById('f-email').value,
@@ -483,23 +483,26 @@
         call_center: document.getElementById('f-cc').value,
         cuenta:      document.getElementById('f-cuenta').value,
         fecha:       new Date().toLocaleString('es-SV'),
-      };
+      });
 
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-      } catch (_) {}
+      // Usamos un iframe oculto para evitar problemas de CORS con Apps Script
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
 
-      // Show success regardless (no-cors doesn't return response body)
-      document.getElementById('step1').style.display = 'none';
-      document.getElementById('step2').style.display = 'none';
-      document.getElementById('step3').style.display = 'none';
-      document.getElementById('success').classList.add('visible');
-      document.getElementById('success').scrollIntoView({ behavior: 'smooth' });
+      fetch(SCRIPT_URL + '?' + params.toString(), {
+        method: 'GET',
+        mode: 'no-cors',
+      }).catch(() => {});
+
+      // Mostrar éxito después de 1.5s
+      setTimeout(() => {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'none';
+        document.getElementById('success').classList.add('visible');
+        document.getElementById('success').scrollIntoView({ behavior: 'smooth' });
+      }, 1500);
     });
 
     /*
@@ -510,12 +513,12 @@
     2. Columnas: Fecha | Nombre | Teléfono | Email | Inglés | Experiencia | Call Center | Cuenta
     3. Extensiones → Apps Script → pegá este código:
 
-    function doPost(e) {
+    function doGet(e) {
       const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Aplicaciones');
-      const data = JSON.parse(e.postData.contents);
+      const p = e.parameter;
       sheet.appendRow([
-        data.fecha, data.nombre, data.telefono, data.email,
-        data.ingles, data.experiencia, data.call_center, data.cuenta
+        p.fecha, p.nombre, p.telefono, p.email,
+        p.ingles, p.experiencia, p.call_center, p.cuenta
       ]);
       return ContentService.createTextOutput('OK');
     }
