@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aplicar — Jav's Corp</title>
+  <meta name="description" content="Elegí tu call center y cuenta. Te referimos gratis a Concentrix o Teleperformance en El Salvador." />
+  <link rel="icon" type="image/svg+xml" href="assets/icon-cup.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="view/style.css" />
+  <style>
+    /* ── Page layout ── */
+    .aplicar-hero {
+      padding: 8rem 1.5rem 3rem;
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .aplicar-hero .eyebrow { display: block; margin-bottom: .75rem; }
+    .aplicar-hero h1 { font-family: var(--font-serif); font-size: clamp(2rem,5vw,3rem); font-weight: 300; margin-bottom: 1rem; }
+    .aplicar-hero p { color: var(--text-muted, #888); font-size: 1.05rem; line-height: 1.7; }
+
+    /* ── Step indicator ── */
+    .steps-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      max-width: 480px;
+      margin: 2.5rem auto 0;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .8rem;
+      color: var(--text-muted, #888);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .step-item.active { color: var(--accent, #7c6f5b); font-weight: 500; }
+    .step-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem;
+    }
+    .step-item.active .step-num { background: var(--accent, #7c6f5b); color: #fff; border-color: transparent; }
+    .step-sep { width: 32px; height: 1px; background: var(--border, #ddd); margin: 0 .5rem; }
+
+    /* ── Call center selector ── */
+    .cc-selector {
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 700px;
+      margin: 3rem auto 0;
+      padding: 0 1.5rem;
+    }
+    .cc-card {
+      flex: 1;
+      min-width: 260px;
+      max-width: 300px;
+      border: 1.5px solid var(--border, #ddd);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      background: var(--surface, #fff);
+    }
+    .cc-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .cc-card.selected { border-color: var(--accent, #7c6f5b); box-shadow: 0 0 0 3px rgba(124,111,91,.12); }
+    .cc-logo { font-size: 1.1rem; font-weight: 600; letter-spacing: .02em; margin-bottom: .5rem; }
+    .cc-logo span { display: block; font-size: .75rem; font-weight: 300; color: var(--text-muted,#888); margin-top: .25rem; }
+    .cc-count { font-size: .8rem; color: var(--accent,#7c6f5b); margin-top: .5rem; }
+
+    /* ── Accounts grid ── */
+    .accounts-section {
+      max-width: 860px;
+      margin: 2.5rem auto 0;
+      padding: 0 1.5rem;
+      display: none;
+    }
+    .accounts-section.visible { display: block; }
+    .accounts-title {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .account-card {
+      border: 1.5px solid var(--border, #ddd);
+      border-radius: 12px;
+      padding: 1.25rem 1.25rem 1rem;
+      background: var(--surface, #fff);
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s;
+      position: relative;
+    }
+    .account-card:hover { border-color: var(--accent,#7c6f5b); }
+    .account-card.selected {
+      border-color: var(--accent,#7c6f5b);
+      box-shadow: 0 0 0 3px rgba(124,111,91,.12);
+    }
+    .account-card.selected::after {
+      content: "✓";
+      position: absolute;
+      top: .75rem; right: .75rem;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent,#7c6f5b);
+      color: #fff;
+      font-size: .7rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .acc-name { font-weight: 500; font-size: .95rem; margin-bottom: .3rem; }
+    .acc-type { font-size: .78rem; color: var(--text-muted,#888); margin-bottom: .6rem; }
+    .acc-salary { font-size: .85rem; color: var(--accent,#7c6f5b); font-weight: 500; }
+    .acc-bonus { font-size: .78rem; color: var(--text-muted,#888); margin-top: .2rem; }
+    .acc-date { font-size: .75rem; color: var(--text-muted,#888); margin-top: .35rem; border-top: 1px solid var(--border,#eee); padding-top: .35rem; }
+
+    /* ── Form ── */
+    .apply-form-section {
+      max-width: 560px;
+      margin: 3rem auto 0;
+      padding: 0 1.5rem 5rem;
+      display: none;
+    }
+    .apply-form-section.visible { display: block; }
+    .apply-form-section h2 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: .5rem;
+      text-align: center;
+    }
+    .selected-account-badge {
+      text-align: center;
+      margin-bottom: 1.75rem;
+      font-size: .85rem;
+      color: var(--text-muted,#888);
+    }
+    .selected-account-badge strong { color: var(--accent,#7c6f5b); }
+    .apply-form { display: flex; flex-direction: column; gap: 1rem; }
+    .apply-form .form-group { display: flex; flex-direction: column; gap: .35rem; }
+    .apply-form label { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted,#888); }
+    .apply-form input, .apply-form select {
+      padding: .75rem 1rem;
+      border: 1.5px solid var(--border,#ddd);
+      border-radius: 8px;
+      background: var(--surface,#fff);
+      color: var(--text,#333);
+      font-family: var(--font-sans);
+      font-size: .95rem;
+      transition: border-color .2s;
+    }
+    .apply-form input:focus, .apply-form select:focus {
+      outline: none;
+      border-color: var(--accent,#7c6f5b);
+    }
+    .apply-form .btn { margin-top: .5rem; width: 100%; justify-content: center; }
+
+    /* ── Success ── */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .success-msg.visible { display: block; }
+    .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .success-msg h2 { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 300; margin-bottom: .75rem; }
+    .success-msg p { color: var(--text-muted,#888); line-height: 1.7; }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .cc-card { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bg-canvas" aria-hidden="true">
+    <div class="bg-blob bg-blob--1"></div>
+    <div class="bg-blob bg-blob--2"></div>
+    <div class="bg-blob bg-blob--3"></div>
+    <div class="bg-blob bg-blob--4"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="main-nav" role="navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg class="nav-cup" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.5 5 Q8.5 3 7.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+          <path d="M11 5 Q12 3 11 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+          <path d="M4 7 L5.5 18 Q5.5 19.5 7 19.5 L15 19.5 Q16.5 19.5 16.5 18 L18 7 Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/>
+          <path d="M16.5 10 Q20 10 20 13.5 Q20 17 16.5 17" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+          <line x1="3" y1="20.5" x2="19" y2="20.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="nav-brand">Jav's Corp</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html#sobre"      class="nav-link">Nosotros</a>
+        <a href="index.html#servicios"  class="nav-link">Servicios</a>
+        <a href="index.html#portafolio" class="nav-link">Portafolio</a>
+        <a href="blog.html"             class="nav-link">Blog</a>
+        <a href="aplicar.html"          class="nav-link" style="color:var(--accent,#7c6f5b);font-weight:500;">Aplicar ✦</a>
+        <a href="index.html#contacto"   class="nav-link">Contacto</a>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+        <span class="theme-toggle__icon theme-toggle__sun">☀︎</span>
+        <span class="theme-toggle__icon theme-toggle__moon">☽</span>
+      </button>
+      <button id="menu-toggle" class="menu-toggle" aria-label="Menú" aria-expanded="false">☰</button>
+    </div>
+    <div id="nav-drawer" class="nav-drawer" role="dialog" aria-modal="true">
+      <div class="drawer-links">
+        <a href="index.html#sobre"      class="nav-link">Nosotros</a>
+        <a href="index.html#servicios"  class="nav-link">Servicios</a>
+        <a href="index.html#portafolio" class="nav-link">Portafolio</a>
+        <a href="blog.html"             class="nav-link">Blog</a>
+        <a href="aplicar.html"          class="nav-link">Aplicar ✦</a>
+        <a href="index.html#contacto"   class="nav-link">Contacto</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="aplicar-hero">
+    <span class="eyebrow">— Sin costo · Proceso 100% gratis</span>
+    <h1>Elegí tu call center<br>y aplicá hoy</h1>
+    <p>Seleccioná la empresa y la cuenta que más te interese. Llenás el formulario y nosotros gestionamos tu referencia.</p>
+
+    <div class="steps-bar">
+      <div class="step-item active" id="step1-ind">
+        <span class="step-num">1</span> Elegí empresa
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item" id="step2-ind">
+        <span class="step-num">2</span> Elegí cuenta
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item" id="step3-ind">
+        <span class="step-num">3</span> Enviá tu info
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1: ELEGIR CALL CENTER -->
+  <div class="cc-selector" id="step1">
+    <div class="cc-card" id="cc-concentrix" onclick="selectCC('concentrix')">
+      <div class="cc-logo">Concentrix <span>Call center · Presencial</span></div>
+      <div class="cc-count">4 cuentas disponibles</div>
+    </div>
+    <div class="cc-card" id="cc-teleperformance" onclick="selectCC('teleperformance')">
+      <div class="cc-logo">Teleperformance <span>Call center · Presencial</span></div>
+      <div class="cc-count">8 cuentas disponibles</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: ELEGIR CUENTA -->
+  <div class="accounts-section" id="step2">
+    <p class="accounts-title" id="accounts-title">Elegí la cuenta que te interesa</p>
+    <div class="accounts-grid" id="accounts-grid"></div>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <button class="btn btn--ghost" onclick="backToCC()" style="font-size:.85rem;">← Cambiar empresa</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: FORMULARIO -->
+  <div class="apply-form-section" id="step3">
+    <h2>Completá tu información</h2>
+    <div class="selected-account-badge">
+      Aplicando a: <strong id="badge-cc"></strong> · <strong id="badge-account"></strong>
+    </div>
+
+    <form class="apply-form" id="apply-form">
+      <div class="form-group">
+        <label for="f-nombre">Nombre completo</label>
+        <input id="f-nombre" name="nombre" type="text" placeholder="Tu nombre completo" required />
+      </div>
+      <div class="form-group">
+        <label for="f-tel">Teléfono / WhatsApp</label>
+        <input id="f-tel" name="telefono" type="tel" placeholder="+503 0000-0000" required />
+      </div>
+      <div class="form-group">
+        <label for="f-email">Correo electrónico</label>
+        <input id="f-email" name="email" type="email" placeholder="tu@email.com" required />
+      </div>
+      <div class="form-group">
+        <label for="f-ingles">Nivel de inglés</label>
+        <select id="f-ingles" name="ingles" required>
+          <option value="" disabled selected>Seleccioná tu nivel</option>
+          <option value="B1">B1 — Intermedio</option>
+          <option value="B2">B2 — Intermedio alto</option>
+          <option value="C1">C1 — Avanzado</option>
+          <option value="Nativo">Inglés nativo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="f-exp">¿Tenés experiencia en call center?</label>
+        <select id="f-exp" name="experiencia" required>
+          <option value="" disabled selected>Seleccioná una opción</option>
+          <option value="Sin experiencia">No, es mi primera vez</option>
+          <option value="Menos de 1 año">Sí, menos de 1 año</option>
+          <option value="1-2 años">Sí, 1 a 2 años</option>
+          <option value="Más de 2 años">Sí, más de 2 años</option>
+        </select>
+      </div>
+      <input type="hidden" id="f-cc" name="call_center" />
+      <input type="hidden" id="f-cuenta" name="cuenta" />
+      <button type="submit" class="btn btn--primary">Enviar aplicación →</button>
+      <button type="button" class="btn btn--ghost" onclick="backToAccounts()" style="font-size:.85rem;">← Cambiar cuenta</button>
+    </form>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-msg" id="success">
+    <div class="success-icon">✦</div>
+    <h2>¡Aplicación recibida!</h2>
+    <p>Recibimos tu información. Nos pondremos en contacto por WhatsApp en las próximas horas para coordinar tu referencia.</p>
+    <br>
+    <a href="index.html" class="btn btn--ghost" style="margin-top:.5rem;">← Volver al inicio</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer id="main-footer" style="margin-top:4rem;">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo" aria-label="Jav's Corp">
+        <svg class="nav-cup" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7.5 5 Q8.5 3 7.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+          <path d="M11 5 Q12 3 11 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+          <path d="M4 7 L5.5 18 Q5.5 19.5 7 19.5 L15 19.5 Q16.5 19.5 16.5 18 L18 7 Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/>
+          <path d="M16.5 10 Q20 10 20 13.5 Q20 17 16.5 17" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+          <line x1="3" y1="20.5" x2="19" y2="20.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="nav-brand">Jav's Corp</span>
+      </a>
+      <p class="footer-copy">&copy; <span id="footer-year"></span> Jav's Corp. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="model/AppModel.js"></script>
+  <script src="view/AppView.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // ── Theme toggle (reuse from main) ──
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') document.body.classList.add('dark');
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // ── Mobile menu ──
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const drawer = document.getElementById('nav-drawer');
+      const open = drawer.classList.toggle('open');
+      this.setAttribute('aria-expanded', open);
+      this.textContent = open ? '✕' : '☰';
+    });
+
+    // ── Data ──
+    const ACCOUNTS = {
+      concentrix: [
+        { name: 'JetBlue', type: 'Aerolínea · Servicio al cliente', salary: '$700 base', bonus: '$100 de bono', date: null },
+        { name: 'Back Office', type: 'Creación de casos JetBlue · Requiere experiencia previa', salary: '$950 base', bonus: '$200 de bono', date: null },
+        { name: 'Rentokil', type: 'Ventas · Agendar citas de fumigación', salary: '$700 base', bonus: '$100 de bono + comisiones ilimitadas', date: null },
+        { name: "Sam's Club", type: 'Servicio al cliente · Trabajo desde casa', salary: '$700 base', bonus: '$100 de bono + $25 conectividad', date: null },
+      ],
+      teleperformance: [
+        { name: 'Chime', type: 'Meraki · Servicios financieros', salary: '$730 base', bonus: null, date: 'Trn inicia May 18 y 19' },
+        { name: 'Eventbrite', type: 'Meraki · Plataforma de eventos', salary: '$730 base', bonus: null, date: 'Trn inicia May 20' },
+        { name: 'FedEx', type: 'Century · Logística y envíos', salary: '$750 base', bonus: null, date: 'Trn inicia May 27' },
+        { name: 'Massachusetts', type: 'Primavera · Servicios gubernamentales', salary: '$720 base', bonus: null, date: 'Trn inicia May 25' },
+        { name: 'Internet Air', type: 'Primavera · Servicios de internet', salary: '$730 base', bonus: null, date: 'Trn inicia May 18' },
+        { name: 'Cricket', type: 'Primavera · Telecomunicaciones', salary: '$730 base', bonus: null, date: 'Trn inicia May 25' },
+        { name: 'Uverse', type: 'Primavera · Servicios de TV e internet', salary: '$730 base', bonus: null, date: 'Trn inicia May 15' },
+        { name: 'BBL', type: 'Primavera · Servicios financieros', salary: '$730 base', bonus: null, date: 'Trn inicia May 25' },
+      ],
+    };
+
+    let selectedCC = null;
+    let selectedAccount = null;
+
+    function selectCC(cc) {
+      selectedCC = cc;
+      document.getElementById('cc-concentrix').classList.toggle('selected', cc === 'concentrix');
+      document.getElementById('cc-teleperformance').classList.toggle('selected', cc === 'teleperformance');
+
+      // Update step indicators
+      document.getElementById('step1-ind').classList.remove('active');
+      document.getElementById('step2-ind').classList.add('active');
+
+      // Render accounts
+      const label = cc === 'concentrix' ? 'Concentrix' : 'Teleperformance';
+      document.getElementById('accounts-title').textContent = `Cuentas disponibles en ${label}`;
+      const grid = document.getElementById('accounts-grid');
+      grid.innerHTML = ACCOUNTS[cc].map((acc, i) => `
+        <div class="account-card" id="acc-${i}" onclick="selectAccount(${i})">
+          <div class="acc-name">${acc.name}</div>
+          <div class="acc-type">${acc.type}</div>
+          <div class="acc-salary">${acc.salary}</div>
+          ${acc.bonus ? `<div class="acc-bonus">${acc.bonus}</div>` : ''}
+          ${acc.date ? `<div class="acc-date">📅 ${acc.date}</div>` : ''}
+        </div>
+      `).join('');
+
+      document.getElementById('step2').classList.add('visible');
+      document.getElementById('step2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function selectAccount(i) {
+      selectedAccount = ACCOUNTS[selectedCC][i];
+      document.querySelectorAll('.account-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('acc-' + i).classList.add('selected');
+
+      // Update step
+      document.getElementById('step2-ind').classList.remove('active');
+      document.getElementById('step3-ind').classList.add('active');
+
+      // Update form badge
+      const ccLabel = selectedCC === 'concentrix' ? 'Concentrix' : 'Teleperformance';
+      document.getElementById('badge-cc').textContent = ccLabel;
+      document.getElementById('badge-account').textContent = selectedAccount.name;
+      document.getElementById('f-cc').value = ccLabel;
+      document.getElementById('f-cuenta').value = selectedAccount.name;
+
+      document.getElementById('step3').classList.add('visible');
+      setTimeout(() => {
+        document.getElementById('step3').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function backToCC() {
+      selectedCC = null;
+      selectedAccount = null;
+      document.getElementById('step2').classList.remove('visible');
+      document.getElementById('step3').classList.remove('visible');
+      document.getElementById('step1-ind').classList.add('active');
+      document.getElementById('step2-ind').classList.remove('active');
+      document.getElementById('step3-ind').classList.remove('active');
+      document.getElementById('step1').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function backToAccounts() {
+      document.getElementById('step3').classList.remove('visible');
+      document.getElementById('step2-ind').classList.add('active');
+      document.getElementById('step3-ind').classList.remove('active');
+      document.getElementById('step2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── Form submit → Google Sheets via Apps Script ──
+    // INSTRUCCIONES: Reemplazá SCRIPT_URL con tu URL de Google Apps Script Web App
+    // Guía rápida al final de este archivo en los comentarios.
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaW-c6y9D4XjsfpdETfTZdkTnV5lB56Vuua_j-QxBo1KNOzCCIHUs0--vu8dLNf-7sAQ/exec';
+
+    document.getElementById('apply-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('button[type=submit]');
+      btn.textContent = 'Enviando…';
+      btn.disabled = true;
+
+      const data = {
+        nombre:      document.getElementById('f-nombre').value,
+        telefono:    document.getElementById('f-tel').value,
+        email:       document.getElementById('f-email').value,
+        ingles:      document.getElementById('f-ingles').value,
+        experiencia: document.getElementById('f-exp').value,
+        call_center: document.getElementById('f-cc').value,
+        cuenta:      document.getElementById('f-cuenta').value,
+        fecha:       new Date().toLocaleString('es-SV'),
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+      } catch (_) {}
+
+      // Show success regardless (no-cors doesn't return response body)
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step3').style.display = 'none';
+      document.getElementById('success').classList.add('visible');
+      document.getElementById('success').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    /*
+    ══════════════════════════════════════════════════════
+    CÓMO CONECTAR CON GOOGLE SHEETS (5 minutos):
+
+    1. Abrí Google Sheets → creá una hoja nueva llamada "Aplicaciones"
+    2. Columnas: Fecha | Nombre | Teléfono | Email | Inglés | Experiencia | Call Center | Cuenta
+    3. Extensiones → Apps Script → pegá este código:
+
+    function doPost(e) {
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Aplicaciones');
+      const data = JSON.parse(e.postData.contents);
+      sheet.appendRow([
+        data.fecha, data.nombre, data.telefono, data.email,
+        data.ingles, data.experiencia, data.call_center, data.cuenta
+      ]);
+      return ContentService.createTextOutput('OK');
+    }
+
+    4. Implementar → Nueva implementación → Aplicación web
+       - Ejecutar como: Yo
+       - Quién tiene acceso: Cualquier persona
+    5. Copiá la URL y pegala en SCRIPT_URL arriba.
+    ══════════════════════════════════════════════════════
+    */
+  </script>
+</body>
+</html>
