@@ -97,7 +97,7 @@ const AppModel = (() => {
         id: 4,
         client: "De 0 a 44",
         category: "Crecimiento total · 3 meses",
-        result: "44 personas referidas y contratadas",
+        result: "44 contratados",
         color: "#f9a8d4",
       },
     ],

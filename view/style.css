@@ -537,7 +537,17 @@ body > * { position: relative; z-index: 1; }
 
 /* ─── PORTFOLIO ─── */
 #portafolio { background: rgba(255,255,255,0.5); backdrop-filter: blur(6px); }
-.portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.25rem; }
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 900px) {
+  .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .portfolio-grid { grid-template-columns: 1fr; }
+}
 .portfolio-card {
   position: relative;
   background: #fff;
@@ -562,6 +572,10 @@ body > * { position: relative; z-index: 1; }
   font-size: 0.8rem;
   color: var(--c-text);
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* ─── CONTACTO ─── */
