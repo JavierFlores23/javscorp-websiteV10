@@ -556,6 +556,10 @@ body > * { position: relative; z-index: 1; }
   padding: 1.8rem;
   overflow: hidden;
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 .portfolio-card:hover {
   transform: translateY(-5px);
