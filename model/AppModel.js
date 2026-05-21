@@ -63,6 +63,13 @@ const AppModel = (() => {
           "No te dejamos solo. Hacemos seguimiento de tu aplicación y te mantenemos informado en cada etapa.",
       },
       {
+        id: "concentrix",
+        icon: "◆",
+        title: "Concentrix SV",
+        description:
+          "Ahora también referimos para Concentrix El Salvador. Misma atención, mismo proceso gratuito, nuevas oportunidades laborales.",
+      },
+      {
         id: "red",
         icon: "◑",
         title: "Red de Freelancers",
@@ -113,7 +120,40 @@ const AppModel = (() => {
 
     posts: [
       {
-        id: "como-aplicar-teleperformance",
+        id: "concentrix-sv-2025",
+        slug: "concentrix-sv-2025",
+        category: "Noticias",
+        tag: "Jav's Corp",
+        title: "Ya referimos para Concentrix El Salvador 🎉",
+        excerpt: "Ampliamos nuestra red: ahora podés aplicar a Concentrix SV a través de Jav's Corp. Mismo proceso gratuito, mismos requisitos, nuevas oportunidades.",
+        date: "2025-05-20",
+        dateDisplay: "20 mayo 2025",
+        readTime: "3 min",
+        featured: true,
+        body: `
+<p>Desde hoy, Jav's Corp no solo refiere para Teleperformance — también gestionamos referencias para <strong>Concentrix El Salvador</strong>. Si estabas esperando esta noticia, es el momento de aplicar.</p>
+
+<h2>¿Qué es Concentrix?</h2>
+<p>Concentrix es uno de los call centers más grandes del mundo, con operaciones en El Salvador hace varios años. Ofrece campañas bilingües y en español, con buenos beneficios y posibilidades reales de crecimiento interno.</p>
+
+<h2>Requisitos para aplicar</h2>
+<ul>
+  <li>DUI vigente</li>
+  <li>Nivel de inglés B1 o superior (para campañas bilingües)</li>
+  <li>Disponibilidad de horario (turnos rotativos)</li>
+  <li>Bachillerato completo</li>
+</ul>
+
+<h2>¿Cómo es el proceso con Jav's Corp?</h2>
+<p>Igual que siempre: completamente gratis para el candidato. Nos escribís por WhatsApp, elegís si querés aplicar a Concentrix o Teleperformance, te preparamos para la entrevista y hacemos seguimiento hasta tu primer día de trabajo.</p>
+
+<h2>¿Por qué aplicar con referencia?</h2>
+<p>Las referencias internas tienen prioridad en el proceso de selección. Tu CV llega destacado y el tiempo de respuesta es significativamente menor que aplicar de forma directa.</p>
+
+<p>¿Listo para dar el paso? Entrá a nuestra página de vacantes, elegí Concentrix y empezá el proceso hoy.</p>
+        `,
+      },
+      {
         slug: "como-aplicar-teleperformance",
         category: "Guías",
         tag: "Empleo",
